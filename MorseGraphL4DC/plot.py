@@ -9,7 +9,8 @@ from typing import Dict, Set, FrozenSet
 from .grids import AbstractGrid
 
 def plot_morse_sets(grid: AbstractGrid, morse_graph: nx.DiGraph, ax: plt.Axes = None,
-                   box_map: nx.DiGraph = None, show_outside: bool = False, **kwargs):
+                   box_map: nx.DiGraph = None, show_outside: bool = False,
+                   dims=(0, 1), **kwargs):
     """
     Plots the Morse sets on a grid.
 
@@ -47,9 +48,10 @@ def plot_morse_sets(grid: AbstractGrid, morse_graph: nx.DiGraph, ax: plt.Axes = 
         for box_index in morse_set:
             if box_index < len(all_boxes):
                 box = all_boxes[box_index]
-                rect = Rectangle((box[0, 0], box[0, 1]),
-                               box[1, 0] - box[0, 0],
-                               box[1, 1] - box[0, 1])
+                d0, d1 = dims
+                rect = Rectangle((box[0, d0], box[0, d1]),
+                               box[1, d0] - box[0, d0],
+                               box[1, d1] - box[0, d1])
                 rects.append(rect)
                 colors.append(color)
 
@@ -72,24 +74,26 @@ def plot_morse_sets(grid: AbstractGrid, morse_graph: nx.DiGraph, ax: plt.Axes = 
                 outside_boxes.add(node)
 
         # Paint outside boxes grey
+        d0, d1 = dims
         for box_index in outside_boxes:
             if box_index < len(all_boxes):
                 box = all_boxes[box_index]
-                rect = Rectangle((box[0, 0], box[0, 1]),
-                               box[1, 0] - box[0, 0],
-                               box[1, 1] - box[0, 1],
+                rect = Rectangle((box[0, d0], box[0, d1]),
+                               box[1, d0] - box[0, d0],
+                               box[1, d1] - box[0, d1],
                                facecolor='grey',
                                edgecolor='none',
                                alpha=0.4)
                 ax.add_patch(rect)
 
-    ax.set_xlim(grid.bounds[0, 0], grid.bounds[1, 0])
-    ax.set_ylim(grid.bounds[0, 1], grid.bounds[1, 1])
+    d0, d1 = dims
+    ax.set_xlim(grid.bounds[0, d0], grid.bounds[1, d0])
+    ax.set_ylim(grid.bounds[0, d1], grid.bounds[1, d1])
     ax.set_aspect('equal', adjustable='box')
 
 def plot_basins_of_attraction(grid: AbstractGrid, basins,
                              morse_graph: nx.DiGraph = None, ax: plt.Axes = None,
-                             show_outside: bool = False, **kwargs):
+                             show_outside: bool = False, dims=(0, 1), **kwargs):
     """
     Plots the basins of attraction with colors matching the Morse sets.
 
@@ -115,14 +119,15 @@ def plot_basins_of_attraction(grid: AbstractGrid, basins,
             colors_cmap = plt.cm.get_cmap('viridis', len(basins))
             color = colors_cmap(list(basins.keys()).index(attractor))
 
+        d0, d1 = dims
         # Box-level basins: basin is a set of box indices
         # Plot basin boxes with lower opacity
         for box_index in basin:
             if box_index < len(all_boxes):
                 box = all_boxes[box_index]
-                rect = Rectangle((box[0, 0], box[0, 1]),
-                               box[1, 0] - box[0, 0],
-                               box[1, 1] - box[0, 1],
+                rect = Rectangle((box[0, d0], box[0, d1]),
+                               box[1, d0] - box[0, d0],
+                               box[1, d1] - box[0, d1],
                                facecolor=color,
                                edgecolor='none',
                                alpha=0.3, **kwargs)
@@ -132,9 +137,9 @@ def plot_basins_of_attraction(grid: AbstractGrid, basins,
         for box_index in attractor:
             if box_index < len(all_boxes):
                 box = all_boxes[box_index]
-                rect = Rectangle((box[0, 0], box[0, 1]),
-                               box[1, 0] - box[0, 0],
-                               box[1, 1] - box[0, 1],
+                rect = Rectangle((box[0, d0], box[0, d1]),
+                               box[1, d0] - box[0, d0],
+                               box[1, d1] - box[0, d1],
                                facecolor=color,
                                edgecolor='none',
                                alpha=1.0, **kwargs)
@@ -147,20 +152,22 @@ def plot_basins_of_attraction(grid: AbstractGrid, basins,
         basin_box_indices = set().union(*basins.values())
         outside_boxes = all_box_indices - basin_box_indices
 
+        d0, d1 = dims
         # Paint outside boxes black
         for box_index in outside_boxes:
             if box_index < len(all_boxes):
                 box = all_boxes[box_index]
-                rect = Rectangle((box[0, 0], box[0, 1]),
-                               box[1, 0] - box[0, 0],
-                               box[1, 1] - box[0, 1],
+                rect = Rectangle((box[0, d0], box[0, d1]),
+                               box[1, d0] - box[0, d0],
+                               box[1, d1] - box[0, d1],
                                facecolor='black',
                                edgecolor='none',
                                alpha=0.5)
                 ax.add_patch(rect)
 
-    ax.set_xlim(grid.bounds[0, 0], grid.bounds[1, 0])
-    ax.set_ylim(grid.bounds[0, 1], grid.bounds[1, 1])
+    d0, d1 = dims
+    ax.set_xlim(grid.bounds[0, d0], grid.bounds[1, d0])
+    ax.set_ylim(grid.bounds[0, d1], grid.bounds[1, d1])
     ax.set_aspect('equal', adjustable='box')
 
 def _hierarchical_dag_layout(G):
@@ -481,8 +488,8 @@ def visualize_morse_sets_graph_basins(grid, morse_graph, basins, box_map,
     :return: output_path
 
     Example:
-        >>> from MorseGraph.analysis import compute_morse_graph_analysis
-        >>> from MorseGraph.plot import visualize_morse_sets_graph_basins
+        >>> from MorseGraphL4DC.analysis import compute_morse_graph_analysis
+        >>> from MorseGraphL4DC.plot import visualize_morse_sets_graph_basins
         >>> box_map, morse_graph, basins = compute_morse_graph_analysis(grid, F)
         >>> visualize_morse_sets_graph_basins(
         ...     grid, morse_graph, basins, box_map,

@@ -28,7 +28,7 @@ This project implements **data-driven Morse graph computation** for analyzing gl
 4. Compute axis-aligned bounding box of all image points
 5. Find all grid cells intersecting the bounding box
 
-**Implementation:** `MorseGraph.dynamics.F_integration`
+**Implementation:** `MorseGraphL4DC.dynamics.F_integration`
 ```python
 class F_integration(Dynamics):
     def __init__(self, ode_f, tau, epsilon=0.0)
@@ -71,7 +71,7 @@ class F_integration(Dynamics):
    - If no data: assign "outside" label
 3. Return all intersecting grid cells
 
-**Implementation:** `MorseGraph.dynamics.F_data`
+**Implementation:** `MorseGraphL4DC.dynamics.F_data`
 ```python
 class F_data(Dynamics):
     def __init__(self, X_data, Y_data, epsilon_in, epsilon_out,
@@ -126,7 +126,7 @@ class F_data(Dynamics):
    - Compute bounding box of images plus padding r
 4. Return all intersecting grid cells
 
-**Implementation:** `MorseGraph.dynamics.F_Lipschitz`
+**Implementation:** `MorseGraphL4DC.dynamics.F_Lipschitz`
 ```python
 class F_Lipschitz(Dynamics):
     def __init__(self, map_f, L_tau, epsilon=0.0)
@@ -170,7 +170,7 @@ class F_Lipschitz(Dynamics):
    - Take union: min/max bounds across both regions
    - Return all intersecting grid cells
 
-**Implementation:** `MorseGraph.learning.GaussianProcessModel`
+**Implementation:** `MorseGraphL4DC.learning.GaussianProcessModel`
 ```python
 class GaussianProcessModel:
     def __init__(self, X_train, Y_train, kernel_type='matern',
@@ -519,7 +519,7 @@ save_metrics_text('metrics_comparison.txt', all_metrics)
 
 ## Comparison Metrics
 
-### Computed Metrics (in `MorseGraph.comparison` and `MorseGraph.metrics`)
+### Computed Metrics (in `MorseGraphL4DC.comparison` and `MorseGraphL4DC.metrics`)
 
 **1. Morse Set IoU** (Intersection over Union)
 ```
@@ -604,7 +604,7 @@ Mean IoU            0.141               0.630               0.067
 
 ## Key Implementation Classes
 
-### 1. **SwitchingSystem** (`MorseGraph/systems.py`)
+### 1. **SwitchingSystem** (`MorseGraphL4DC/systems.py`)
 
 Hybrid dynamical system with polynomial switching surfaces.
 
@@ -627,7 +627,7 @@ class SwitchingSystem:
 
 ---
 
-### 2. **UniformGrid** (`MorseGraph/grids.py`)
+### 2. **UniformGrid** (`MorseGraphL4DC/grids.py`)
 
 Uniform subdivision of state space.
 
@@ -654,7 +654,7 @@ class UniformGrid:
 
 ---
 
-### 3. **Dynamics Classes** (`MorseGraph/dynamics.py`)
+### 3. **Dynamics Classes** (`MorseGraphL4DC/dynamics.py`)
 
 All inherit from abstract `Dynamics` base class.
 
@@ -677,7 +677,7 @@ class Dynamics(ABC):
 
 ---
 
-### 4. **Model** (`MorseGraph/core.py`)
+### 4. **Model** (`MorseGraphL4DC/core.py`)
 
 Computes box map from grid + dynamics.
 
@@ -698,7 +698,7 @@ class Model:
 
 ---
 
-### 5. **GaussianProcessModel** (`MorseGraph/learning.py`)
+### 5. **GaussianProcessModel** (`MorseGraphL4DC/learning.py`)
 
 Wraps sklearn GP for dynamics prediction.
 
@@ -730,7 +730,7 @@ Matérn(length_scale, nu=2.5)
 
 ---
 
-### 6. **Analysis Functions** (`MorseGraph/analysis.py`)
+### 6. **Analysis Functions** (`MorseGraphL4DC/analysis.py`)
 
 Core topological computations.
 

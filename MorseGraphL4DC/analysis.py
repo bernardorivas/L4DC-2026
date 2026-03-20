@@ -310,9 +310,9 @@ def full_morse_graph_analysis(grid, F, compute_basins=True):
                   If compute_basins=False, returns empty dict
 
     Example:
-        >>> from MorseGraph.grids import UniformGrid
-        >>> from MorseGraph.dynamics import F_integration
-        >>> from MorseGraph.analysis import full_morse_graph_analysis
+        >>> from MorseGraphL4DC.grids import UniformGrid
+        >>> from MorseGraphL4DC.dynamics import F_integration
+        >>> from MorseGraphL4DC.analysis import full_morse_graph_analysis
         >>> grid = UniformGrid(bounds=np.array([[0,0], [6,6]]), divisions=np.array([128, 128]))
         >>> F = F_integration(ode_system, tau=0.5)
         >>> box_map, morse_graph, basins = full_morse_graph_analysis(grid, F)
@@ -320,7 +320,7 @@ def full_morse_graph_analysis(grid, F, compute_basins=True):
         # Skip basin computation (faster for large Morse graphs)
         >>> box_map, morse_graph, _ = full_morse_graph_analysis(grid, F, compute_basins=False)
     """
-    from MorseGraph.core import Model
+    from MorseGraphL4DC.core import Model
 
     # Compute box map
     model = Model(grid, F)

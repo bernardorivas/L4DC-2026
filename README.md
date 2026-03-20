@@ -37,7 +37,7 @@ pip install -r requirements.txt
 
 ```
 MorseGraphACC26/
-├── MorseGraph/          # Main package
+├── MorseGraphL4DC/          # Main package
 │   ├── core.py          # Box map and Morse graph computation
 │   ├── grids.py         # Grid subdivision (uniform/adaptive)
 │   ├── dynamics.py      # ODE dynamics and tau-maps
@@ -70,9 +70,9 @@ python examples/example2.py
 
 ```python
 import numpy as np
-from MorseGraph.grids import UniformGrid
-from MorseGraph.dynamics import F_integration
-from MorseGraph.analysis import full_morse_graph_analysis
+from MorseGraphL4DC.grids import UniformGrid
+from MorseGraphL4DC.dynamics import F_integration
+from MorseGraphL4DC.analysis import full_morse_graph_analysis
 
 # Define ODE system: dx/dt = f(t, x)
 def ode_system(t, x):

@@ -44,8 +44,8 @@ def generate_trajectory_data(ode_func, tau, N_trajectories, bounds, T_total=10, 
              containing [φ(0,x), φ(τ,x), φ(2τ,x), ..., φ(T_total,x)]
 
     Example:
-        >>> from MorseGraph.utils import generate_trajectory_data
-        >>> from MorseGraph.systems import toggle_switch
+        >>> from MorseGraphL4DC.utils import generate_trajectory_data
+        >>> from MorseGraphL4DC.systems import toggle_switch
         >>> from functools import partial
         >>> ode = partial(toggle_switch, L1=1, T1=3, U1=5, L2=1, T2=3, U2=5, gamma1=1, gamma2=1)
         >>> bounds = np.array([[0., 0.], [6., 6.]])
@@ -128,7 +128,7 @@ def define_tau_map(ode_f, tau: float, method: str = 'RK45',
     """
     # Auto-detect SwitchingSystem and create event functions
     event_functions = []
-    from MorseGraph.systems import SwitchingSystem
+    from MorseGraphL4DC.systems import SwitchingSystem
     if isinstance(ode_f, SwitchingSystem):
         # Create event functions for each polynomial (switching surface)
         for poly in ode_f.polynomials:

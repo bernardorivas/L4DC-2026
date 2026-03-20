@@ -1,7 +1,7 @@
 import networkx as nx
 import numpy as np
-from MorseGraph.utils import find_box_containing_point, compute_morse_set_centroid
-from MorseGraph.analysis import compute_morse_graph, compute_all_morse_set_basins
+from MorseGraphL4DC.utils import find_box_containing_point, compute_morse_set_centroid
+from MorseGraphL4DC.analysis import compute_morse_graph, compute_all_morse_set_basins
 
 def post_processing_example_1(grid, box_map, morse_graph, basins, T1, T2):
     """
@@ -132,7 +132,7 @@ def post_processing_example_1(grid, box_map, morse_graph, basins, T1, T2):
 
     # Step 6: Compute RoAs using containment-based algorithm
     # Import here to avoid circular dependency
-    from MorseGraph.analysis import compute_all_morse_set_roas
+    from MorseGraphL4DC.analysis import compute_all_morse_set_roas
 
     print("  Computing RoAs with containment algorithm...")
     combined_roas = compute_all_morse_set_roas(combined_morse_graph, box_map)
@@ -256,7 +256,7 @@ def post_processing_example_2(grid, box_map, morse_graph, basins):
 
     # Step 6: Compute RoAs using containment-based algorithm
     # Import here to avoid circular dependency
-    from MorseGraph.analysis import compute_all_morse_set_roas
+    from MorseGraphL4DC.analysis import compute_all_morse_set_roas
 
     print("  Computing RoAs with containment algorithm...")
     combined_roas = compute_all_morse_set_roas(combined_morse_graph, box_map)

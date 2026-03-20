@@ -11,7 +11,7 @@ of computed Morse graphs against ground truth, including:
 import networkx as nx
 import numpy as np
 from typing import Dict, Set, FrozenSet, Tuple, List, Optional
-from MorseGraph.utils import compute_morse_set_centroid
+from MorseGraphL4DC.utils import compute_morse_set_centroid
 
 
 def match_morse_sets_by_topology(morse_graph_1: nx.DiGraph,

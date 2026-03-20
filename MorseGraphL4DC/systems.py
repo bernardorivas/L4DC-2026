@@ -49,7 +49,7 @@ class SwitchingSystem:
         """
         Compute mode index σ(x) ∈ {0, ..., M-1} from polynomial sign pattern.
 
-        Binary encoding: [sign(p_1), ..., sign(p_k)] → integer
+        Binary encoding: [sign(p_1), ..., sign(k)] → integer
         Example: [-, +, -] → [0, 1, 0] → 0*1 + 1*2 + 0*4 = 2
 
         Args:
@@ -59,8 +59,7 @@ class SwitchingSystem:
             Mode index (int)
         """
         x = np.asarray(x)
-        signs = [1 if p(x) > 0 else 0 for p in self.polynomials]
-        return sum(s * (2**i) for i, s in enumerate(signs))
+        return sum((1 if p(x) > 0 else 0) * (2**i) for i, p in enumerate(self.polynomials))
 
     def lambda_vector(self, x):
         """
@@ -74,14 +73,13 @@ class SwitchingSystem:
         Returns:
             Binary indicator vector (numpy array of length M)
         """
-        x = np.asarray(x)
         lam = np.zeros(self.n_modes)
         lam[self.sigma(x)] = 1.0
         return lam
 
     def evaluate(self, x):
         """
-        Evaluate vector field: f(x) = Σ_j λ_j(x) f_j(x).
+        Evaluate vector field: f(x) = f_{σ(x)}(x).
 
         Args:
             x: State vector (numpy array or array-like)
@@ -90,9 +88,8 @@ class SwitchingSystem:
             Vector field evaluation f(x) (numpy array)
         """
         x = np.asarray(x)
-        lam = self.lambda_vector(x)
-        f_values = np.array([f_j(x) for f_j in self.vector_fields])
-        return lam @ f_values  # Shape: [M] @ [M x n] = [n]
+        idx = self.sigma(x)
+        return self.vector_fields[idx](x)
 
     def is_on_switching_surface(self, x, tol=1e-10):
         """

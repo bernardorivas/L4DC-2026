@@ -666,28 +666,36 @@ class F_integration(Dynamics):
     Automatically detects SwitchingSystem instances and enables event detection
     for precise switching surface crossing.
     """
-    def __init__(self, ode_f: Callable[[float, np.ndarray], np.ndarray], tau: float, epsilon: float = 0.0):
+    def __init__(self, ode_f: Callable[[float, np.ndarray], np.ndarray], tau: float, epsilon: float = 0.0,
+                 evaluation_method: str = "corners", num_random_points: int = 10, use_events: bool = True):
         """
         :param ode_f: The function defining the ODE, f(t, y).
-                     If ode_f is a SwitchingSystem instance, automatically
-                     creates event functions for switching surface detection.
+                     If ode_f is a SwitchingSystem instance and use_events is True,
+                     automatically creates event functions for switching surface detection.
         :param tau: The integration time.
         :param epsilon: The bloating factor (typically the grid cell diameter).
+        :param evaluation_method: Method for sampling points in the box: "corners", "center", or "random".
+        :param num_random_points: Number of points to sample if evaluation_method is "random".
+        :param use_events: If True, enable event detection for SwitchingSystem instances.
         """
         self.ode_f = ode_f
         self.tau = tau
         self.epsilon = epsilon
+        self.evaluation_method = evaluation_method
+        self.num_random_points = num_random_points
+        self.use_events = use_events
 
         # Auto-detect SwitchingSystem and create event functions
         self.event_functions = []
-        from MorseGraph.systems import SwitchingSystem
-        if isinstance(ode_f, SwitchingSystem):
-            # Create event functions for each polynomial (switching surface)
-            for poly in ode_f.polynomials:
-                def event_func(t, x, p=poly):
-                    return p(x)
-                event_func.terminal = False
-                self.event_functions.append(event_func)
+        if self.use_events:
+            from MorseGraphL4DC.systems import SwitchingSystem
+            if isinstance(ode_f, SwitchingSystem):
+                # Create event functions for each polynomial (switching surface)
+                for poly in ode_f.polynomials:
+                    def event_func(t, x, p=poly):
+                        return p(x)
+                    event_func.terminal = False
+                    self.event_functions.append(event_func)
 
     def __call__(self, box: np.ndarray) -> np.ndarray:
         """
@@ -701,19 +709,59 @@ class F_integration(Dynamics):
         """
         dim = box.shape[1]
 
-        # Sample points from the box (corners and center)
-        corner_points = list(itertools.product(*zip(box[0], box[1])))
-        center_point = (box[0] + box[1]) / 2
-        sample_points = np.array(corner_points + [center_point])
+        # Generate sample points based on evaluation method
+        if self.evaluation_method == "corners":
+            # Generate all 2^D corners of the box + center
+            corner_points = list(itertools.product(*zip(box[0], box[1])))
+            center_point = (box[0] + box[1]) / 2
+            sample_points = np.array(corner_points + [center_point])
+            
+        elif self.evaluation_method == "center":
+            # Use only the center of the box
+            center_point = (box[0] + box[1]) / 2
+            sample_points = np.array([center_point])
+            
+        elif self.evaluation_method == "random":
+            # Generate random points inside the box
+            sample_points = np.random.uniform(
+                low=box[0], 
+                high=box[1], 
+                size=(self.num_random_points, dim)
+            )
+        else:
+            raise ValueError(f"Unknown evaluation_method: {self.evaluation_method}")
 
-        # Integrate the ODE for each sample point in parallel
+        # Integrate the ODE for each sample point
         def integrate_single_point(p):
             # Use enhanced integration parameters for switching systems
+            from MorseGraphL4DC.systems import SwitchingSystem
+            is_switching = isinstance(self.ode_f, SwitchingSystem)
+            
             if self.event_functions:
+                try:
+                    sol = solve_ivp(
+                        self.ode_f, [0, self.tau], p,
+                        t_eval=[self.tau],
+                        events=self.event_functions,
+                        max_step=0.1,
+                        rtol=1e-6,
+                        atol=1e-9
+                    )
+                except ValueError:
+                    # Fallback: point is on or near a switching surface; brentq
+                    # bracket fails.  Integrate without events using small steps.
+                    sol = solve_ivp(
+                        self.ode_f, [0, self.tau], p,
+                        t_eval=[self.tau],
+                        max_step=0.05,
+                        rtol=1e-6,
+                        atol=1e-9
+                    )
+            elif is_switching:
+                # Switching system but events disabled - use small max_step
                 sol = solve_ivp(
                     self.ode_f, [0, self.tau], p,
                     t_eval=[self.tau],
-                    events=self.event_functions,
                     max_step=0.05,
                     rtol=1e-6,
                     atol=1e-9
@@ -723,9 +771,7 @@ class F_integration(Dynamics):
                 sol = solve_ivp(self.ode_f, [0, self.tau], p, t_eval=[self.tau])
             return sol.y[:, -1]
 
-        image_points = np.array(Parallel(n_jobs=-1)(
-            delayed(integrate_single_point)(p) for p in sample_points
-        ))
+        image_points = np.array([integrate_single_point(p) for p in sample_points])
 
         # Compute the bounding box of the final points
         min_bounds = np.min(image_points, axis=0)
@@ -863,7 +909,7 @@ class F_gaussianprocess(Dynamics):
         """
         Initialize GP-based dynamics.
         
-        :param gp_model: Trained GaussianProcessModel from MorseGraph.learning
+        :param gp_model: Trained GaussianProcessModel from MorseGraphL4DC.learning
         :param confidence_level: 1-δ, probability that true value lies in confidence region
                                 (default: 0.95 as in paper)
         :param epsilon: Additional bloating parameter (default: 0)

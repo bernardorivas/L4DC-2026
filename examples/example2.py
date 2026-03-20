@@ -16,17 +16,17 @@ import os
 import argparse
 import time
 
-from MorseGraph.grids import UniformGrid
-from MorseGraph.dynamics import F_integration, F_Lipschitz, F_data, F_gaussianprocess
-from MorseGraph.systems import SwitchingSystem
-from MorseGraph.learning import train_gp_from_data
-from MorseGraph.utils import generate_trajectory_data, define_tau_map, compute_modes
-from MorseGraph.postprocessing import post_processing_example_2
-from MorseGraph.analysis import full_morse_graph_analysis
-from MorseGraph.plot import save_all_panels_individually
-from MorseGraph.comparison import (compute_morse_set_iou_table, compute_roa_iou_table,
+from MorseGraphL4DC.grids import UniformGrid
+from MorseGraphL4DC.dynamics import F_integration, F_Lipschitz, F_data, F_gaussianprocess
+from MorseGraphL4DC.systems import SwitchingSystem
+from MorseGraphL4DC.learning import train_gp_from_data
+from MorseGraphL4DC.utils import generate_trajectory_data, define_tau_map, compute_modes
+from MorseGraphL4DC.postprocessing import post_processing_example_2
+from MorseGraphL4DC.analysis import full_morse_graph_analysis
+from MorseGraphL4DC.plot import save_all_panels_individually
+from MorseGraphL4DC.comparison import (compute_morse_set_iou_table, compute_roa_iou_table,
                                     compute_coverage_ratios, format_iou_tables_text)
-from MorseGraph.cache import (save_method_results, load_method_results,
+from MorseGraphL4DC.cache import (save_method_results, load_method_results,
                                save_shared_data, load_shared_data, cache_exists)
 
 
@@ -825,7 +825,7 @@ def main():
     # =========================================================================
     # METRICS COMPARISON (vs Ground Truth)
     # =========================================================================
-    from MorseGraph.metrics import compute_all_metrics
+    from MorseGraphL4DC.metrics import compute_all_metrics
 
     print("\n" + "=" * 80)
     print("METRICS COMPARISON (vs Ground Truth - F_integration)")

@@ -36,7 +36,7 @@ function [a_opt, xi_val, diagnostics] = searchSwitchingSurface_softmargin(X, sig
     objective = sum(xi) + beta * sum(t);
 
     % Solver settings
-    options = sdpsettings('verbose', 1, 'solver', 'intlinprog');  % or 'gurobi' if installed
+    options = sdpsettings('verbose', 1, 'solver', 'mosek');  % 'intlinprog' or 'gurobi' if installed
 
     % Solve
     diagnostics = optimize(constraints, objective, options);

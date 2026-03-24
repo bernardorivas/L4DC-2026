@@ -43,7 +43,7 @@ prog = prog.withPos(eta - a2); prog = prog.withPos(a2 + eta); % -η ≤ a2k ≤ 
 
 options = spot_sdp_default_options();
 options.verbose = 12;
-[sol, prog] = prog.minimize(sum(delta) * 1e3, @spot_mosek, options);
+sol = prog.minimize(sum(delta) * 1e3, @spot_mosek, options);
 
 % Output variables
 vars.a1 = a1;

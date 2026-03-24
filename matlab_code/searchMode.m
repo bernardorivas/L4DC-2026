@@ -30,7 +30,7 @@ end
 
 options = spot_sdp_default_options();
 options.verbose = 12;
-[sol, prog] = prog.minimize(sum(t) * 1e3, @spot_mosek, options);
+sol = prog.minimize(sum(t) * 1e3, @spot_mosek, options);
 
 vars.lam = lam;
 vars.t   = t;

@@ -224,7 +224,7 @@ end
 
 options = spot_sdp_default_options();
 options.verbose = opts.verbose;
-[sol, prog] = prog.minimize(obj, @spot_mosek, options);
+sol = prog.minimize(obj, @spot_mosek, options);
 
 % Recover *unscaled* coefficients for output (compatible with your pipeline)
 a1 = (double(sol.eval(a1_s)) ./ scale);

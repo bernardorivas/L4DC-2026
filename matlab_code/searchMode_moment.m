@@ -63,7 +63,7 @@ prog = prog.withPos(t + cost_vec);
 % Solve
 options = spot_sdp_default_options();
 options.verbose = 12;
-[sol, prog] = prog.minimize(sum(t) * 1e3, @spot_mosek, options);
+sol = prog.minimize(sum(t) * 1e3, @spot_mosek, options);
 
 % Package outputs
 % Stack lambdas into an N x M matrix for convenient downstream use

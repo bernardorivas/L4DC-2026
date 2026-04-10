@@ -1,6 +1,6 @@
-# MorseGraphACC26
+# Topological Dynamics via Learned Hybrid Systems
 
-Python implementation for analyzing switching systems using a basic implementation of Morse Graph (CMGDB)
+Python implementation for analyzing switching systems using a baic implementation of CMGDB
 
 ## Overview
 

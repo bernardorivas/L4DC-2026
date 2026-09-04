@@ -18,8 +18,8 @@ This project computes Morse graphs, Morse sets, and regions of attraction for dy
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/bernardorivas/MorseGraphACC26.git
-cd MorseGraphACC26
+git clone https://github.com/bernardorivas/L4DC-2026.git
+cd L4DC-2026
 ```
 
 2. Create and activate a virtual environment:
@@ -36,7 +36,7 @@ pip install -r requirements.txt
 ## Project Structure
 
 ```
-MorseGraphACC26/
+L4DC-2026/
 ├── MorseGraphL4DC/          # Main package
 │   ├── core.py          # Box map and Morse graph computation
 │   ├── grids.py         # Grid subdivision (uniform/adaptive)
@@ -117,4 +117,4 @@ The package supports multiple approaches for computing tau-maps:
 
 ## License
 
-MIT License
+This project is licensed under the [MIT License](LICENSE).
